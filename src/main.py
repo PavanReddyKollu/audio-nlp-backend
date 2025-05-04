@@ -19,19 +19,20 @@ app.add_middleware(
 
 UPLOAD_DIR = "temp_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+print(UPLOAD_DIR)
 
-@app.post("/upload/")
-async def upload_audio(file: UploadFile = File(...)):
-    try:
+# @app.post("/upload/")
+# async def upload_audio(file: UploadFile = File(...)):
+#     try:
 
-        temp_filename = os.path.join(UPLOAD_DIR, f"{uuid.uuid4().hex}.mp3")
-        with open(temp_filename, "wb") as f:
-            f.write(await file.read())
+#         temp_filename = os.path.join(UPLOAD_DIR, f"{uuid.uuid4().hex}.mp3")
+#         with open(temp_filename, "wb") as f:
+#             f.write(await file.read())
 
-        transcript = transcribe_audio_file(temp_filename)
-        return {"transcript": transcript}
-    except Exception as e:
-        return {"error": str(e)}
-    finally:
-        if os.path.exists(temp_filename):
-            os.remove(temp_filename)
+#         transcript = transcribe_audio_file(temp_filename)
+#         return {"transcript": transcript}
+#     except Exception as e:
+#         return {"error": str(e)}
+#     finally:
+#         if os.path.exists(temp_filename):
+#             os.remove(temp_filename)
