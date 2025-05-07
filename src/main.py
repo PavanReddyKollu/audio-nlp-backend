@@ -1,37 +1,48 @@
+import os
+import tempfile
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-import uuid
-import os
 from src.models.audio_converter import transcribe_audio_file
 
-app = FastAPI(
-    title="Audio Upload API",
-    docs_url="/"
-)
-
+app = FastAPI(docs_url="/")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update in production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"], allow_credentials=True,
+    allow_methods=["*"], allow_headers=["*"],
 )
 
-UPLOAD_DIR = "temp_files"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-@app.post("/upload/")
+@app.post("/upload")
 async def upload_audio(file: UploadFile = File(...)):
+    tmp_path = None
+
+    # Read incoming bytes
+    contents = await file.read()
+    if not contents:
+        return {"error": "Empty file uploaded"}
+
+    original_ext = os.path.splitext(file.filename)[1].lower()
+    if original_ext not in (".ogg", ".mp3"):
+        return {"error": "Only .ogg and .mp3 supported"}
+
+    # Create temp file with the same extension
+    fd, tmp_path = tempfile.mkstemp(suffix=original_ext)
+    os.close(fd)
+
+
     try:
+        # Write the upload into the temp file
+        with open(tmp_path, "wb") as f:
+            f.write(contents)
 
-        temp_filename = os.path.join(UPLOAD_DIR, f"{uuid.uuid4().hex}.mp3")
-        with open(temp_filename, "wb") as f:
-            f.write(await file.read())
-
-        transcript = transcribe_audio_file(temp_filename)
+        # Transcribe via whisper (which will call ffmpeg internally)
+        transcript = transcribe_audio_file(tmp_path)
         return {"transcript": transcript}
+
     except Exception as e:
+        # Catch any transcription or I/O errors
         return {"error": str(e)}
+
     finally:
-        if os.path.exists(temp_filename):
-            os.remove(temp_filename)
+        # Clean up the temp file if it was created
+        if tmp_path and os.path.exists(tmp_path):
+            os.remove(tmp_path)
