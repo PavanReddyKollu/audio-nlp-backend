@@ -1,0 +1,71 @@
+./node_modules
+./forecasting-ui/node_modules
+./forecasting/package-lock.json
+
+# ────────── Python / FastAPI ──────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+*.pyd
+*.so
+*.egg-info/
+*.log
+*.sqlite3
+.env
+.env.*
+.venv/
+venv/
+pip-wheel-metadata/
+site/
+
+# Alembic migration cache
+alembic/versions/__pycache__/
+
+# ────────── Jupyter Notebooks ──────────
+.ipynb_checkpoints
+
+# ────────── VS Code / PyCharm ──────────
+.vscode/
+.idea/
+*.code-workspace
+
+# ────────── Node / React (Vite) ──────────
+**/node_modules/
+**/.next/
+**/.turbo/
+**/dist/
+**/build/
+**/coverage/
+**/.eslintcache
+**/.parcel-cache/
+**/vite.svg
+
+# ────────── Docker / Containers ──────────
+*.tar
+*.pid
+*.sock
+
+# ────────── OS junk files ──────────
+.DS_Store
+Thumbs.db
+
+# ────────── Logs / Temp ──────────
+*.log
+*.bak
+*.tmp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+cache/
+
+# ────────── Python Bytecode ──────────
+*.pyc
+*.pyo
+
+# ────────── Uvicorn Reload Files ──────────
+reload.*
+
+# ────────── Misc ──────────
+*.db
