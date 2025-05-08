@@ -15,8 +15,7 @@ def wordcloud_negative(text: str) -> str:
     words = [w for w in text.split() if w.lower() not in stop_words]
 
     words = " ".join([W for W in words if W in negative_words])
-    joined = " ".join(words)
-    wc = WordCloud(background_color='white', width=1800, height=1400).generate(joined)
+    wc = WordCloud(background_color='white', width=1800, height=1400).generate(words)
 
     fig = plt.figure(figsize=(10, 7))
     plt.imshow(wc, interpolation='bilinear')
